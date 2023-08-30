@@ -1,0 +1,35 @@
+<div class="controls">
+    <h1>Show uwu random XKCD comic</h1>
+</div>
+
+<div class="content">
+    <form method="post" class="valign-center col-gap-10">
+        <span>
+            <input type="submit" name="submit-search" value="Random" class="input-submit">
+        </span>
+    </form>
+    <br><br>
+    <?php
+    if (isset($_POST['submit-search'])) {
+        $response = file_get_contents("https://xkcd.com/info.0.json");
+        $data = json_decode($response);
+        $comic_number = rand(1, $data->num);
+
+        $comic_response = file_get_contents("https://xkcd.com/$comic_number/info.0.json");
+        $comic_data = json_decode($comic_response);
+
+        $comic_title = $comic_data->title;
+        $comic_alt = $comic_data->alt;
+        $comic_image = $comic_data->img;
+    ?>
+        <h2><?= $comic_title ?></h2>
+        <p><?= $comic_alt ?></p>
+        <a href="<?= $comic_image ?>" class="align-left">Download</a>
+        <br><br>
+        <img src="<?= $comic_image ?>" class="xkcd-comic">
+    <?php
+    }
+    ?>
+    <p class="error"><?= isset($error) ? $error : '' ?></p>
+</div>
+
